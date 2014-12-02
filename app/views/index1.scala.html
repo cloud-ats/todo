@@ -1,0 +1,29 @@
+@import helper._
+<html>
+<head>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")"></script>
+<script type="text/javascript" src="@routes.Application.getIndexJs()"></script>
+
+<link rel="stylesheet" type="text/css" media="all" href="@routes.Assets.at("stylesheets/todos.css")">
+<!-- Latest compiled and minified CSS -->
+
+<!-- Optional theme -->
+
+<!-- Latest compiled and minified JavaScript -->
+</head>
+
+<body>
+
+	 <div id='todoapp'>
+		@header()
+		<section id='main' style='display: block;'>
+			<input id='toggle-all' type='checkbox'> <label for='toggle-all'>Mark all as complete</label>
+			<ul id='todo-list'>
+
+			</ul>
+		</section>
+		@footer()
+	</div>
+</body>
+</html>
+

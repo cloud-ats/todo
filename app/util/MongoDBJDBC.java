@@ -18,7 +18,7 @@ import com.mongodb.MongoClient;
  */
 public class MongoDBJDBC {
   protected static final Logger LOGGER = (Logger)LoggerFactory.getLogger("MongoDBJDBC"); 
-  private int max;
+  
   static MongoClient client;
   /**
    * 
@@ -29,10 +29,10 @@ public class MongoDBJDBC {
       LOGGER.info("create new connection");
       
       client = new MongoClient("localhost", 27017);
-      
-      
+
       // connect
       DB db = client.getDB("todoList");
+      
       return db;
     } catch (Exception e)
     {
@@ -48,20 +48,5 @@ public class MongoDBJDBC {
     LOGGER.info("close connection");
     client.close();
   }
-  /**
-   * 
-   * @return max id of data in collection
-   */
-  public int getMaxID() {
-    DBCollection todoTable = getDB().getCollection("TodoList");
-    DBObject sort = new BasicDBObject();
-    sort.put("id", -1);
-    DBCursor cursor = todoTable.find().sort(sort).limit(1);
-    while (cursor.hasNext()) {
-      max = ((BasicBSONObject) cursor.next()).getInt("id");
-    }
-    
-    return max;
-
-  }
+ 
 }

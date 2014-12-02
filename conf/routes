@@ -3,14 +3,13 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index()
+GET     /                           	controllers.Application.index()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file               	controllers.Assets.at(path="/public", file)
 
-POST	/							controllers.Application.newTask()
-PUT		/							controllers.Application.editTask()
-DELETE	/							controllers.Application.deleteAll()
-#GET		/delete					controllers.Application.deleteTask()
-
-GET		/indexjs					controllers.Application.getIndexJs()
+GET		/task							controllers.Application.tasks()
+POST	/task							controllers.Application.newTask()
+PUT		/task							controllers.Application.editTask()
+DELETE	/task							controllers.Application.deleteAll()
+GET		/indexjs						controllers.Application.getIndexJs()

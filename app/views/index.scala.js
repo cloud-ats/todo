@@ -3,7 +3,34 @@
  */
 
 $(document).ready(function(){
-		console.log('load page');
+		$.ajax({
+		
+			url: "@controllers.routes.Application.tasks()",
+		  type: "GET",
+		  dataType: "json",
+		  success: function(data){
+		    	  
+		    var ul = $("#todo-list");
+		    $(data).each(function() {
+		      var id = (this.id);
+		      var name = (this.name);
+		      var output = 
+ 			    	  "<li class = 'liTag'>" +
+ 				    	  "<div class = 'view'>" +
+ 				    		   "<input id = 'todo_"+ id +"' class = 'toggle' type = 'checkbox'>" +
+ 				    		   "<label class = 'list'>"+name+"</label> <a id = 'todo_"+ id +"' class = 'deleted'></a>" +
+ 				    		"</div>" +
+ 				    		"<input class='edit' type='text' value="+name+">" +
+ 				    	"</li>";
+ 			    	
+		      $(ul).append(output);	
+		    });
+	 		},
+	 		error: function(e, msg) {   
+	 		 alert('Opps');
+			}
+		});
+		
 		$('.toggle').prop('checked', false);
 		$("body").on("change","#toggle-all",function(event) {  //on click
  			var todo_count = $(".todo-count");
@@ -12,26 +39,25 @@ $(document).ready(function(){
  				$("#clear-completed").css("display", "block");
  				$("#footer").css("display", "block");
  				$('#todo-list .liTag .view .deleted').css("display","block");
- 		    	$('.toggle').each(function() { //loop through each checkbox
- 		          	this.checked = true;  //select all checkboxes with class "checkbox1"          
- 		         	// $(this).parent().find('#todo-list .liTag .view .deleted').css("display","block");
- 		        	 $("#clear-completed").css("display", "block");
- 		        	$(todo_count).text($("li :checkbox:checked").length+" item selected");
- 		    	});
+ 		    $('.toggle').each(function() { //loop through each checkbox
+ 		      this.checked = true;  //select all checkboxes with class "checkbox1"          
+ 		      $("#clear-completed").css("display", "block");
+ 		      $(todo_count).text($("li :checkbox:checked").length+" item selected");
+ 		    });
  		 	}else{
  		 		$(todo_count).text("0"+" item selected");
  		 		$('#todo-list .liTag .view .deleted').css("display","none");
- 		      	$('.toggle').each(function() { //loop through each checkbox
- 		            this.checked = false; //deselect all checkboxes with class "checkbox1"                      
- 		          	 $("#clear-completed").css("display", "block");
- 		      	});        
- 		     }
+ 		      $('.toggle').each(function() { //loop through each checkbox
+ 		         this.checked = false; //deselect all checkboxes with class "checkbox1"                      
+ 		          	$("#clear-completed").css("display", "block");
+ 		      });        
+ 		    }
  			
  		});
 		$("body").on("keypress","#new-todo",function(event) {
  			
- 			if ( event.which == 13 && $(this).val() != '') { 			
- 				var name = $(this).val();	
+			if ( event.which == 13 && $(this).val() != '') { 			
+				var name = $(this).val();	
  				var input = $(this);
  				var ul = $("#todo-list");
  				var todo_count = $(".todo-count");	
@@ -41,10 +67,8 @@ $(document).ready(function(){
 
  					url: "@controllers.routes.Application.newTask()",
  			    	type: "POST",
- 			    	//dataType: 'json',
  			    	data: jsonData,
  			    	success: function(id){
-					console.log(id);
 						var output = 
  			    			"<li class = 'liTag'>" +
  				    		  "<div class = 'view'>" +
@@ -56,7 +80,10 @@ $(document).ready(function(){
  			    	
  			    		$(ul).append(output);	
 				
- 	 	 			}
+ 	 	 			},
+ 	 	 			error: function(e, msg) {   	
+ 	 	 				alert('Opps');
+ 	 				}
 
  	 			});
  	 				
@@ -78,19 +105,14 @@ $(document).ready(function(){
  			}
  			$(todo_count).text($("li :checkbox:checked").length+" item selected");
  		});
- 	// Handle when click delete button 
+ 		// Handle when click delete button 
  		$("body").on("click",".deleted", function(){
- 			//console.log($(this).parent().attr('id'));
  			var id_todo = $(this).attr('id');
  			var id = id_todo.substr(id_todo.indexOf('_')+1);
- 			$(this).parent().parent().hide();
  			var todo_count = $(".todo-count");
  			var todo_count_text =	$(todo_count).text();
  			var todo_count1= todo_count_text.substr(0, todo_count_text.indexOf(' ')); 
  			var count = todo_count1 - '1';
- 			//console.log(count);
- 			console.log(id_todo);
- 			console.log(id);
  			$(todo_count).text(count+" item selected");
  			var jsonData = {'id': id};
  			$.ajax({
@@ -98,8 +120,13 @@ $(document).ready(function(){
  				url: "@controllers.routes.Application.deleteAll()",
  				type: "DELETE",
  				data : jsonData,
- 				success: function(){
+ 				success: function(data){
  					console.log(id);
+ 					var Litag = $('#todo_'+id).closest('li.liTag');
+ 					$(Litag).remove();
+ 				},
+ 				error: function(e, msg) {   	
+ 					alert('Opps');
  				}
  			}); 
  			
@@ -122,19 +149,25 @@ $(document).ready(function(){
  			if ( event.which == 13 ) {
  				
  				var id_todo = $(this).parent().find('.view input').attr('id');
- 				var id = id_todo.substr(id_todo.indexOf('_')+1);
- 				$(this).hide();
- 				$(this).parent().find('.view').show();		
- 				var value = $(this).val();
- 				$(this).parent().find('.view .list').text(value);
+ 				var id = id_todo.substr(id_todo.indexOf('_')+1);	
+ 				var value = $(this).val();	
  				var jsonData = {'id': id ,'name' : value};
  				$.ajax({
  					url: "@controllers.routes.Application.editTask()",
  					type: "PUT",
  					data: jsonData,
  					success: function(){
- 					
- 					}
+ 						var view = $('#todo_'+id).closest('.view');
+ 						var edit = $('#todo_'+id).parent().parent().find('.edit');
+ 						var list = $('#todo_'+id).parent().find('.list');
+ 						$(view).show();
+ 		 				$(edit).hide();
+ 		 				$(list).text(value);
+ 		 				
+ 					},
+	 				error: function(e, msg) {   
+	 					alert('Opps');
+	 				}
  				});
  				
  			}
@@ -147,8 +180,8 @@ $(document).ready(function(){
  		});
  		$("body").on("click","#clear-completed",function(){
  	 		
+ 		  var todo_count = $(".todo-count");
  			var id = $(this).attr('id');
- 			$(this).parent().parent().find('#main #toggle-all').css("display","none");
  			var arrayData = {};
  			arrayData.check = [];
  			$("input:checkbox").each(function(){
@@ -162,24 +195,26 @@ $(document).ready(function(){
  				}
  				
  			});
- 			var i;
- 			for(i = 0; i < arrayData.check.length; i++){
- 				var id = "#todo_"+arrayData.check[i];
- 				var checkbox = $("#todo_"+arrayData.check[i]);
- 				var li = $(checkbox).closest("li.liTag");
- 				$(li).remove();
  			
- 			}
- 			if(arrayData.check.length == 0){
- 			//	$("label[for='toggle-all']").hide();
- 				//$('#toggle-all').hide();
- 			}
- 			//alert(arrayData.check);
  		 	if(arrayData.check.length >=1){
 	 			$.ajax({
 	 				url: "@controllers.routes.Application.deleteAll()",
 	 				type: "DELETE",
-	 				data: {"id_all" : arrayData.check}
+	 				data: {"id_all" : arrayData.check},
+	 				success: function(){
+	 					var i;
+	 		 			for(i = 0; i < arrayData.check.length; i++){
+	 		 				var id = "#todo_"+arrayData.check[i];
+	 		 				var checkbox = $("#todo_"+arrayData.check[i]);
+	 		 				var li = $(checkbox).closest("li.liTag");
+	 		 				$(li).remove();
+	 		 				$(todo_count).text($("li :checkbox:checked").length+" item selected");
+	 		 			}
+	 					
+	 				},
+	 				error: function(e, msg) {   
+	 					alert('Opps');
+	 				}
 	 			});
  			}
  			else {
