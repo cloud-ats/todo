@@ -86,7 +86,7 @@ public class Application extends Controller {
     Map<String, String[]> values = request().body().asFormUrlEncoded();
     String name = values.get("name")[0];
     String id = values.get("id")[0];
-    BasicDBObject doc=new BasicDBObject().append("id", id).append("name", name);
+    BasicDBObject doc=new BasicDBObject().append("id", Integer.valueOf(id)).append("name", name);
     new TaskDAO().updateDoc("TodoList", doc);
        
     return ok();  

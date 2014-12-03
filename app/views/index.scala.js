@@ -76,7 +76,7 @@ $(document).ready(function(){
  				    		     "<input id = 'todo_"+ id +"' class = 'toggle' type = 'checkbox'>" +
  				    		     "<label class = 'list'>"+name+"</label> <a id = 'todo_"+ id +"' class = 'deleted'></a>" +
  				    		  "</div>" +
- 				    		  "<input class='edit' type='text' value="+name+">" +
+ 				    		  "<input class='edit' type='text' value='"+name+"'>" +
  				    		"</li>";
  			    	
  			    		$(ul).append(output);	
