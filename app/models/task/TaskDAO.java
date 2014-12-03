@@ -1,65 +1,19 @@
-package models.dao;
+package models.task;
+import models.generic.GenericDAO;
+
 import org.bson.BasicBSONObject;
 
 import play.Logger;
-import models.dto.TaskDTO;
+import util.MongoDBHelper;
+import util.Util;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.fpt.su11.conn.MongoDBHelper;
-import com.fpt.su11.util.Utils;
-public class TaskDAO {	
-	public boolean updateDocument(String collectionName,TaskDTO task){
-		DB conn=null;
-		DBCursor cursor =null;
-		try{   
-			conn = MongoDBHelper.getConnection();
-			MongoDBHelper.open_Con(conn);			
-			DBCollection coll = conn.getCollection(collectionName);     
-			BasicDBObject whereQuery = new BasicDBObject();
-			BasicDBObject newDocument = new BasicDBObject();
-			newDocument.append("$set", new BasicDBObject().append("name",task.getName()));			
-			whereQuery.put("id", task.getId());
-			cursor = coll.find(whereQuery);
-			while(cursor.hasNext()) {
-			 /* Logger.info(cursor.next());*/			 
-				DBObject updateDocument = cursor.next();			 
-				coll.update(updateDocument, newDocument);				
-			}
-		}catch(Exception e){
-			Logger.info(Utils.stackTraceToString(e));
-		}finally{
-			cursor.close();
-		}
-		
-		return false;
-	}
-	public boolean deleteDocument(String collectionName,TaskDTO task){
-		DB conn=null;
-		DBCursor cursor =null;
-		try{   
-			conn = MongoDBHelper.getConnection();
-			MongoDBHelper.open_Con(conn);			
-			DBCollection coll = conn.getCollection(collectionName);     
-			BasicDBObject whereQuery = new BasicDBObject();						
-			whereQuery.put("id", task.getId());
-			cursor = coll.find(whereQuery);
-			while(cursor.hasNext()) {
-			 /* Logger.info(cursor.next());*/			 
-				DBObject deleteDocument = cursor.next();
-				coll.remove(deleteDocument);								
-			}
-		}catch(Exception e){
-			Logger.info(Utils.stackTraceToString(e));
-		}finally{
-			cursor.close();
-		}
-		
-		return false;
-	}
+public class TaskDAO extends GenericDAO{	
+	
 	/**
 	 * 
 	 * @param collectionName
@@ -83,7 +37,7 @@ public class TaskDAO {
 			}
 		}catch(Exception e){
 			max=-1;
-			Logger.info(Utils.stackTraceToString(e));
+			Logger.info(Util.stackTraceToString(e));
 		}finally{
 			
 		}

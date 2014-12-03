@@ -1,7 +1,6 @@
-package com.fpt.su11.conn;
+package util;
 import play.Logger;
 
-import com.fpt.su11.util.Utils;
 import com.mongodb.MongoClient;
 import com.mongodb.DB;
 import com.mongodb.MongoClientOptions;
@@ -31,15 +30,15 @@ public  class MongoDBHelper {
           new MongoClientOptions.Builder().connectionsPerHost(maxConnection).build());
 
     } catch (Exception e) {
-      Logger.info(Utils.stackTraceToString(e));
+      Logger.info(Util.stackTraceToString(e));
     } 
   }
   
   public static void loadProperties() {
-    host_name = Utils.getProperty("mongo_ip", "localhost");
-    port = Utils.getProperty("mongo_port", 27017);
-    db_name = Utils.getProperty("mongo_name", "todoList");
-    maxConnection = Utils.getProperty("mongo_connection", 20);
+    host_name = Util.getProperty("mongo_ip", "localhost");
+    port = Util.getProperty("mongo_port", 27017);
+    db_name = Util.getProperty("mongo_name", "test");
+    maxConnection = Util.getProperty("mongo_connection", 20);
   }
 
   public static  DB getConnection() throws Exception {    
@@ -71,7 +70,7 @@ public  class MongoDBHelper {
       open_Con(cmd.getConnection());
       cmd.execute();
     } catch (Exception e) {
-      Logger.info(Utils.stackTraceToString(e));
+      Logger.info(Util.stackTraceToString(e));
     } finally {
       release(cmd.getConnection());
     }
@@ -85,7 +84,7 @@ public  class MongoDBHelper {
     try {
       conn.requestDone();
     } catch (Exception e) {
-      Logger.info(Utils.stackTraceToString(e));
+      Logger.info(Util.stackTraceToString(e));
     }    
   }
   
@@ -97,7 +96,7 @@ public  class MongoDBHelper {
     try {
       conn.requestStart();
     } catch (Exception e) {
-      Logger.info(Utils.stackTraceToString(e));
+      Logger.info(Util.stackTraceToString(e));
     }
   }
 

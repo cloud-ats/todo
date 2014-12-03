@@ -1,4 +1,4 @@
-package com.fpt.su11.conn;
+package util;
 
 import com.mongodb.DB;
 

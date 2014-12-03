@@ -14,13 +14,14 @@ $(document).ready(function(){
 		    $(data).each(function() {
 		      var id = (this.id);
 		      var name = (this.name);
+		      console.log(name);
 		      var output = 
  			    	  "<li class = 'liTag'>" +
  				    	  "<div class = 'view'>" +
  				    		   "<input id = 'todo_"+ id +"' class = 'toggle' type = 'checkbox'>" +
  				    		   "<label class = 'list'>"+name+"</label> <a id = 'todo_"+ id +"' class = 'deleted'></a>" +
  				    		"</div>" +
- 				    		"<input class='edit' type='text' value="+name+">" +
+ 				    		"<input class='edit' type='text' value='"+name+"'>" +
  				    	"</li>";
  			    	
 		      $(ul).append(output);	

@@ -1,26 +1,29 @@
-package models.dto;
+package models.task;
 
-public class TaskDTO {
-	private Integer id;
-	private String name;
-	public TaskDTO() {
-		// TODO Auto-generated constructor stub
+import com.mongodb.BasicDBObject;
+
+public class Task extends BasicDBObject {
+	private static final long serialVersionUID = 1L;
+
+	public int getId() {
+		return this.getInt("id");
 	}
-	public TaskDTO(int id,String name){
-		this.setId(id);
-		this.setName(name);
+
+	public void setId(int id) {
+		this.put("id", id);
 	}
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+
 	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
+		return this.getString("name");
 	}
 
+	public void setName(String name) {
+		this.put("name", name);
+	}
+
+	public Task from(BasicDBObject source) {
+		this.put("id", source.get("id"));
+		this.put("name", source.get("name"));
+		return this;
+	}
 }

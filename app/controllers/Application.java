@@ -1,28 +1,16 @@
 package controllers;
-
 import java.util.List;
 import java.util.Map;
-
-import models.Task;
-import models.dao.ObjDAO;
-import models.dao.TaskDAO;
-import models.dto.TaskDTO;
-
+import models.task.Task;
+import models.task.TaskDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import util.MongoDBJDBC;
-import util.TaskHelper;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 
 /**
  * 
@@ -41,14 +29,16 @@ public class Application extends Controller {
   }
   
   public static Result tasks(){
-    
-    List<Task> tasks =TaskHelper.getAllTask(); 
+       
+    List<BasicDBObject> listDoc =new TaskDAO().getList("TodoList");
     //List<Task> tasks = new ObjDAO().getListAll(TaskDTO.class, "TodoList");
     ArrayNode array = Json.newObject().arrayNode();
     ObjectNode json = null;
     response().setContentType("text/json");
-    System.out.println(tasks.size());
-    for (Task task : tasks) {
+  
+    for (BasicDBObject doc : listDoc) {
+      Task task=new Task();
+      task.from(doc);
       json = Json.newObject();
       json.put("id", task.getId());
       json.put("name", task.getName());
@@ -82,7 +72,7 @@ public class Application extends Controller {
     task.setId(id + 1);
     task.setName(todoName);
     
-    new ObjDAO().insertDocument("TodoList", task);
+    new TaskDAO().insertDoc("TodoList", task);
    // TaskHelper.create(task);
     
     return ok(Integer.toString(id + 1));  
@@ -96,9 +86,9 @@ public class Application extends Controller {
     Map<String, String[]> values = request().body().asFormUrlEncoded();
     String name = values.get("name")[0];
     String id = values.get("id")[0];
-    
-    TaskHelper.edit(Integer.parseInt(id),name);
-    
+    BasicDBObject doc=new BasicDBObject().append("id", id).append("name", name);
+    new TaskDAO().updateDoc("TodoList", doc);
+       
     return ok();  
   }
   
@@ -108,15 +98,22 @@ public class Application extends Controller {
    */
   public static Result deleteAll() {
     Map<String, String[]> values = request().body().asFormUrlEncoded();
-    String[] id_all = values.get("id_all[]"); 
+    String[] id_all = values.get("id_all[]");
+    TaskDAO taskDao=new TaskDAO(); 
     if(id_all != null){
       
-      TaskHelper.deleteAll(id_all);
+//      TaskHelper.deleteAll(id_all);
+    	
+    	for (int i=0;i<id_all.length;i++){
+    		BasicDBObject doc=new BasicDBObject().append("id", Integer.valueOf(id_all[i]));
+    		taskDao.deleteDoc("TodoList", doc);
+       	}
     }
     
     else {
-      String id = values.get("id")[0];
-      TaskHelper.delete(Integer.parseInt(id));
+      String id = values.get("id")[0];   
+      BasicDBObject doc=new BasicDBObject().append("id", Integer.valueOf(id));
+      taskDao.deleteDoc("TodoList", doc);
     }
     
     return ok();

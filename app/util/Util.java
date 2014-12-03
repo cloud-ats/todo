@@ -1,8 +1,8 @@
-package com.fpt.su11.util;
+package util;
 
 import play.Play;
 
-public class Utils {
+public class Util {
 
   public static String stackTraceToString(Throwable e) {
     StringBuilder sb = new StringBuilder();

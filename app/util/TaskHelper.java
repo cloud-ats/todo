@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bson.BasicBSONObject;
 
-import models.Task;
+import models.task.Task;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
