@@ -105,29 +105,29 @@ public class ObjDAO {
    * @param collectionName
    * @param doc
    */
-  public void insertDocument(String collectionName, BasicDBObject doc) {
-    
-    try {
-      final DB conn = MongoDBHelper.getConnection();  
-      Command cmd = new Command() {
-        
-        @Override
-        public DB getConnection() {
-          return conn;
-        }
-        @Override
-        public void execute() {
-          DBCollection coll = conn.getCollection(collectionName);
-          coll.insert(doc);
-        }
-      };
-      
-      MongoDBHelper.execute(cmd);
-      
-    } catch (Exception e) {
-      Logger.info(Utils.stackTraceToString(e));
-    }
-  }
+//  public void insertDocument(String collectionName, BasicDBObject doc) {
+//    
+//    try {
+//      final DB conn = MongoDBHelper.getConnection();  
+//      Command cmd = new Command() {
+//        
+//        @Override
+//        public DB getConnection() {
+//          return conn;
+//        }
+//        @Override
+//        public void execute() {
+//          DBCollection coll = conn.getCollection(collectionName);
+//          coll.insert(doc);
+//        }
+//      };
+//      
+//      MongoDBHelper.execute(cmd);
+//      
+//    } catch (Exception e) {
+//      Logger.info(Utils.stackTraceToString(e));
+//    }
+//  }
 
   public <T> void insertDocument(String collectionName, T obj) {
     try {
