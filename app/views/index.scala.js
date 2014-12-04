@@ -14,7 +14,6 @@ $(document).ready(function(){
 		    $(data).each(function() {
 		      var id = (this.id);
 		      var name = (this.name);
-		      console.log(name);
 		      var output = 
  			    	  "<li class = 'liTag'>" +
  				    	  "<div class = 'view'>" +
@@ -122,7 +121,7 @@ $(document).ready(function(){
  				type: "DELETE",
  				data : jsonData,
  				success: function(data){
- 					console.log(id);
+
  					var Litag = $('#todo_'+id).closest('li.liTag');
  					$(Litag).remove();
  				},
