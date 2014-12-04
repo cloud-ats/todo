@@ -17,8 +17,7 @@ import com.mongodb.BasicDBObject;
  * @author TrinhTV3
  *  Class Application to receive request and handle
  */
-public class Application extends Controller {
-  public static Logger logger = LoggerFactory.getLogger("Application");
+public class Application extends Controller {  
   /**
    * show home screen with list task in database
    * @return
@@ -65,7 +64,7 @@ public class Application extends Controller {
   public static Result newTask() {
   
     int id = new TaskDAO().getMaxID("TodoList", "id", -1);
-    System.out.println(id);
+    play.Logger.info(String.valueOf(id));
     Map<String, String[]> values = request().body().asFormUrlEncoded();
     String todoName = values.get("name")[0];
     Task task = new Task();

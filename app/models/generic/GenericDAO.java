@@ -15,6 +15,7 @@ import com.mongodb.DBObject;
 
 public abstract  class GenericDAO {
 	public static void main(String[] args) {
+		System.out.println("hello world");
 		
 	 
 	}
@@ -256,8 +257,62 @@ public abstract  class GenericDAO {
 		return listDoc;
 			
 	  }
-	 
+  /**
+	 * Get list document
+	 * @param collectionName
+	 * @param 
+	 * @return List<BasicDBObject>listDoc
+	 * 
+	 */   
 	
+  public <T extends GenericDTO>List<T> getListGeneric(String collectionName,Class<T> clazz){	
+		DB conn = null;
+		DBCursor cursor = null;
+		List<T> listDoc = new ArrayList<T>();
+		T task = null;
+		try {
+			conn = MongoDBHelper.getConnection();
+			MongoDBHelper.open_Con(conn);
+			DBCollection coll = conn.getCollection(collectionName);
+			cursor = coll.find();
+			while (cursor.hasNext()) {	
+				task=clazz.newInstance();
+				task.from(cursor.next());
+				listDoc.add(task);				
+			}
+		} catch (Exception e) {
+			Logger.info(Util.stackTraceToString(e));
+		} finally {
+			cursor.close();
+			MongoDBHelper.release(conn);
+		}
+		return listDoc;
+	
+  }	 
+  public <T extends GenericDTO>List<T> getListGeneric(String collectionName,Class<T> clazz,int pagSize,int skip){	
+		DB conn = null;
+		DBCursor cursor = null;
+		List<T> listDoc = new ArrayList<T>();
+		T task = null;
+		try {
+			conn = MongoDBHelper.getConnection();
+			MongoDBHelper.open_Con(conn);
+			DBCollection coll = conn.getCollection(collectionName);
+			cursor = coll.find().limit(pagSize).skip(skip);
+			while (cursor.hasNext()) {	
+				task=clazz.newInstance();
+				task.from(cursor.next());
+				listDoc.add(task);				
+			}
+		} catch (Exception e) {
+			Logger.info(Util.stackTraceToString(e));
+		} finally {
+			cursor.close();
+			MongoDBHelper.release(conn);
+		}
+		return listDoc;
+	
+  }		
   
   
   /**
