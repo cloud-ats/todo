@@ -11,6 +11,6 @@ GET     /assets/*file               	controllers.Assets.at(path="/public", file)
 GET		/task							controllers.Application.tasks()
 POST	/task							controllers.Application.newTask()
 PUT		/task							controllers.Application.editTask()
-DELETE	/task							controllers.Application.deleteAll()
+DELETE	/task							controllers.Application.delete()
 
 GET		/indexjs						controllers.Application.getIndexJs()

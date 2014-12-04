@@ -32,7 +32,7 @@ $(document).ready(function(){
 		});
 		
 		$('.toggle').prop('checked', false);
-		
+		$('#toggle-all').prop('checked', false);
 		$("body").on("change","#toggle-all",function(event) {  //on click
  			var todo_count = $(".todo-count");
  			
@@ -95,14 +95,18 @@ $(document).ready(function(){
 		// Handle Checkbox click event
  		$("body").on("change", ".toggle", function() {
  			var todo_count = $(".todo-count");
-
+ 			var len = $("li :checkbox").length;
  			if($(this).is(':checked')){		
+ 			  if($("li :checkbox:checked").length == len) {
+ 			   $('#toggle-all').prop('checked', true);
+ 			  }
  				var id = $(this).attr('id');
  				$("#clear-completed").css("display", "block");
  				$(this).parent().find('a').css("display", "block");
  		
  			} else {
  				$(this).parent().find('a').css("display", "none");
+ 				$('#toggle-all').prop('checked', false);
  			}
  			
  			$(todo_count).text($("li :checkbox:checked").length+" item selected");
@@ -116,27 +120,29 @@ $(document).ready(function(){
  			var todo_count_text =	$(todo_count).text();
  			var todo_count1= todo_count_text.substr(0, todo_count_text.indexOf(' ')); 
  			var count = todo_count1 - '1';
- 			var jsonData = {'id': id};
+ 			var jsonData = {'check': id};
 
  			$(todo_count).text(count+" item selected");
  			
  			$.ajax({
  				
- 				url: "@controllers.routes.Application.deleteAll()",
+ 				url: "@controllers.routes.Application.delete()",
  				type: "DELETE",
  				data : jsonData,
  				success: function(data){
+ 				  
  					var Litag = $('#todo_'+id).closest('li.liTag');
  					$(Litag).remove();
  				},
- 				error: function(e, msg) {   	
+ 				error: function(e, msg) {   
+ 				 
  					alert('Opps');
  				}
  			}); 
  		});
  		
  		//Handle to show input edit text when click label tag
- 		$("body").on("click",".liTag div label",function(event){
+ 		$("body").on("dblclick",".liTag div label",function(event){
  			$(this).parent().hide();
  			var input = $(this).parent().parent().find('.edit');
  			$(input).show();
@@ -181,45 +187,67 @@ $(document).ready(function(){
  		});
  		
  		$("body").on("click","#clear-completed",function(){
- 	 		
+ 		  var len = $("li :checkbox:checked").length;
+ 		 
+ 		  var arrayData = {};
+ 		  arrayData.check = [];
+ 		  var check ;
  		  var todo_count = $(".todo-count");
  			var id = $(this).attr('id');
- 			var arrayData = {};
- 			arrayData.check = [];
- 			$("input:checkbox").each(function(){
- 				
- 				if($(this).is(":checked")){
- 					if((this).id != "toggle-all"){
- 						var	id_todo = ($(this).attr("id"));
- 						var id = id_todo.substr(id_todo.indexOf('_')+1);
- 						arrayData.check.push(id);
- 					}
- 				}
- 				
- 			});
+ 			if($('#toggle-all').is(":checked")){
+ 			  check = "true";
+ 			}
+ 			else {
+ 			  
+ 			  check = "false";
+   			
+   			$("input:checkbox").each(function(){
+   				
+   				if($(this).is(":checked")){
+   					if((this).id != "toggle-all"){
+   						var	id_todo = ($(this).attr("id"));
+   						var id = id_todo.substr(id_todo.indexOf('_')+1);
+   						arrayData.check.push(id);
+   					}
+   				}
+   				
+   			});
+ 			}
  			
- 		 	if(arrayData.check.length >=1) {
+ 			if(len >= 1){
 	 			$.ajax({
-	 				url: "@controllers.routes.Application.deleteAll()",
+	 				url: "@controllers.routes.Application.delete()",
 	 				type: "DELETE",
-	 				data: {"id_all" : arrayData.check},
-	 				success: function(){
-	 					var i;
-	 		 			for(i = 0; i < arrayData.check.length; i++){
-	 		 				var id = "#todo_"+arrayData.check[i];
-	 		 				var checkbox = $("#todo_"+arrayData.check[i]);
-	 		 				var li = $(checkbox).closest("li.liTag");
-	 		 				$(li).remove();
-	 		 				$(todo_count).text($("li :checkbox:checked").length+" item selected");
-	 		 			}
+	 				data: {"id_all" : arrayData.check, 'check': check},
+	 				success: function(check){
+	 				  
+	 				  if("false" == check){
+  	 					var i;
+  	 		 			for(i = 0; i < arrayData.check.length; i++){
+  	 		 				var id = "#todo_"+arrayData.check[i];
+  	 		 				var checkbox = $("#todo_"+arrayData.check[i]);
+  	 		 				var li = $(checkbox).closest("li.liTag");
+  	 		 				$(li).remove();
+  	 		 				$(todo_count).text($("li :checkbox:checked").length+" item selected");
+  	 		 				$('#toggle-all').prop('checked', false);
+  	 		 			}
+	 				  }
+	 				  else{
+	 				    
+	 				    $("#todo-list").empty();
+	 				    $('#toggle-all').prop('checked', false);
+	 				    $(todo_count).text($("li :checkbox:checked").length+" item selected");
+	 				  }
 	 					
 	 				},
 	 				error: function(e, msg) {   
+	 				  
 	 					alert('Opps');
 	 				}
 	 			});
- 			} else {
- 				alert("you must choose at least one checkbox");
- 			} 
+ 			}
+ 			else {
+ 			 alert('You must choose at least todo');
+ 			}
  		});
 });
