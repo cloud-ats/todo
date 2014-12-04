@@ -14,10 +14,13 @@ public abstract class GenericDTO extends BasicDBObject {
 
 	}
 
-	public void from(DBObject doc) {
+	public void from(DBObject doc) throws IllegalArgumentException, IllegalAccessException  {
 		Field fields[] = this.getClass().getFields();
 		for (int j = 0; j < fields.length; j++) {
-			if (fields[j].isAnnotationPresent(MapField.class)) {
+			if (fields[j].isAnnotationPresent(MapField.class)) {	
+				//set value to field
+				fields[j].set(this,doc.get(fields[j].getName()) );
+				//put value to json object
 				this.put(fields[j].getName(), doc.get(fields[j].getName()));
 			}
 		}
