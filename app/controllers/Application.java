@@ -3,7 +3,6 @@ import java.util.List;
 import java.util.Map;
 
 import models.task.Task;
-import models.task.Task2;
 import models.task.TaskDAO;
 
 import org.slf4j.Logger;
@@ -29,19 +28,17 @@ public class Application extends Controller {
    */
   public static Result index() {
     
-    return ok(views.html.index1.render());
+    return ok(views.html.index.render());
   }
   
   public static Result tasks(){
        
-    List<BasicDBObject> listDoc =new TaskDAO().getList("TodoList");
-    List<Task2>listDoc2=new TaskDAO().getListGeneric("TodoList", Task2.class);
-    //List<Task> tasks = new ObjDAO().getListAll(TaskDTO.class, "TodoList");
+    List<Task>listDoc=new TaskDAO().getListGeneric("TodoList", Task.class);
     ArrayNode array = Json.newObject().arrayNode();
     ObjectNode json = null;
     response().setContentType("text/json");
   
-    for (Task2 doc : listDoc2) {
+    for (Task doc : listDoc) {
 //      Task task=new Task();
 //      task.from(doc);
       json = Json.newObject();
@@ -73,11 +70,9 @@ public class Application extends Controller {
     play.Logger.info(String.valueOf(id));
     Map<String, String[]> values = request().body().asFormUrlEncoded();
     String todoName = values.get("name")[0];
-    Task task = new Task();
-    task.setId(id + 1);
-    task.setName(todoName);
+    BasicDBObject doc=new BasicDBObject().append("id", id+1).append("name", todoName);
     
-    new TaskDAO().insertDoc("TodoList", task);
+    new TaskDAO().insertDoc("TodoList", doc);
    // TaskHelper.create(task);
     
     return ok(Integer.toString(id + 1));  
@@ -109,7 +104,7 @@ public class Application extends Controller {
       
 //      TaskHelper.deleteAll(id_all);
     	
-    	for (int i=0;i<id_all.length;i++){
+    	for (int i=0;i<id_all.length;i++) {
     		BasicDBObject doc=new BasicDBObject().append("id", Integer.valueOf(id_all[i]));
     		taskDao.deleteDoc("TodoList", doc);
        	}

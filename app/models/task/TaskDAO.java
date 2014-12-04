@@ -1,4 +1,5 @@
 package models.task;
+
 import models.generic.GenericDAO;
 
 import org.bson.BasicBSONObject;
@@ -11,7 +12,12 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
+
+/**
+ * 
+ * @author TuanHQ
+ *
+ */
 public class TaskDAO extends GenericDAO{	
 	
 	/**
@@ -22,26 +28,27 @@ public class TaskDAO extends GenericDAO{
 	 * @return
 	 */
 	public int getMaxID(String collectionName,String fieldName,int typeSort) {
-		DB conn=null;
+		
+	  DB conn=null;
 		DBCursor cursor =null;
 		int max=-1;
-		try{   
+		
+		try {   
 			conn = MongoDBHelper.getConnection();
 			MongoDBHelper.open_Con(conn);			
 			DBCollection coll = conn.getCollection(collectionName);
-			DBObject sort = new BasicDBObject();
-		    sort.put(fieldName, typeSort);
+			
+			BasicDBObject sort = new BasicDBObject(fieldName, typeSort);
 			cursor=coll.find().sort(sort).limit(1);
 			while (cursor.hasNext()) {
 			      max = ((BasicBSONObject) cursor.next()).getInt(fieldName);
 			}
-		}catch(Exception e){
+		} catch(Exception e) {
 			max=-1;
 			Logger.info(Util.stackTraceToString(e));
-		}finally{
-			
 		}
-		return max;
 		
-	  }
+		//
+		return max;
+	}
 }

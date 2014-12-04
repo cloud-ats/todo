@@ -18,7 +18,6 @@ public class Util {
     try {
       result = Play.application().configuration().getString(key);
     } catch (Exception e) {
-      // TODO: handle exception
       result=null;
     }
     return result == null ? _default : result;
@@ -30,7 +29,6 @@ public class Util {
       String temp = Play.application().configuration().getString(key);
       result=Integer.parseInt(temp);
     } catch (Exception e) {
-      // TODO: handle exception
       result=null;
     }
     return result == null ? _default : result;

@@ -32,6 +32,7 @@ $(document).ready(function(){
 		});
 		
 		$('.toggle').prop('checked', false);
+		
 		$("body").on("change","#toggle-all",function(event) {  //on click
  			var todo_count = $(".todo-count");
  			
@@ -39,12 +40,13 @@ $(document).ready(function(){
  				$("#clear-completed").css("display", "block");
  				$("#footer").css("display", "block");
  				$('#todo-list .liTag .view .deleted').css("display","block");
- 		    $('.toggle').each(function() { //loop through each checkbox
+ 		    
+ 				$('.toggle').each(function() { //loop through each checkbox
  		      this.checked = true;  //select all checkboxes with class "checkbox1"          
  		      $("#clear-completed").css("display", "block");
  		      $(todo_count).text($("li :checkbox:checked").length+" item selected");
  		    });
- 		 	}else{
+ 		 	} else {
  		 		$(todo_count).text("0"+" item selected");
  		 		$('#todo-list .liTag .view .deleted').css("display","none");
  		      $('.toggle').each(function() { //loop through each checkbox
@@ -54,6 +56,7 @@ $(document).ready(function(){
  		    }
  			
  		});
+		
 		$("body").on("keypress","#new-todo",function(event) {
  			
 			if ( event.which == 13 && $(this).val() != '') { 			
@@ -63,8 +66,8 @@ $(document).ready(function(){
  				var todo_count = $(".todo-count");	
  			    $(input).val("");   		
  				var jsonData = {'name': name};
+ 				
  				$.ajax({
-
  					url: "@controllers.routes.Application.newTask()",
  			    	type: "POST",
  			    	data: jsonData,
@@ -84,27 +87,27 @@ $(document).ready(function(){
  	 	 			error: function(e, msg) {   	
  	 	 				alert('Opps');
  	 				}
-
  	 			});
  	 				
  			}
- 		}); 	
+ 		});
+		
 		// Handle Checkbox click event
  		$("body").on("change", ".toggle", function() {
- 			
  			var todo_count = $(".todo-count");
+
  			if($(this).is(':checked')){		
  				var id = $(this).attr('id');
  				$("#clear-completed").css("display", "block");
  				$(this).parent().find('a').css("display", "block");
  		
- 			}
- 			else
- 			{
+ 			} else {
  				$(this).parent().find('a').css("display", "none");
  			}
+ 			
  			$(todo_count).text($("li :checkbox:checked").length+" item selected");
  		});
+ 		
  		// Handle when click delete button 
  		$("body").on("click",".deleted", function(){
  			var id_todo = $(this).attr('id');
@@ -113,15 +116,16 @@ $(document).ready(function(){
  			var todo_count_text =	$(todo_count).text();
  			var todo_count1= todo_count_text.substr(0, todo_count_text.indexOf(' ')); 
  			var count = todo_count1 - '1';
- 			$(todo_count).text(count+" item selected");
  			var jsonData = {'id': id};
+
+ 			$(todo_count).text(count+" item selected");
+ 			
  			$.ajax({
  				
  				url: "@controllers.routes.Application.deleteAll()",
  				type: "DELETE",
  				data : jsonData,
  				success: function(data){
-
  					var Litag = $('#todo_'+id).closest('li.liTag');
  					$(Litag).remove();
  				},
@@ -129,18 +133,14 @@ $(document).ready(function(){
  					alert('Opps');
  				}
  			}); 
- 			
- 			
  		});
  		
  		//Handle to show input edit text when click label tag
  		$("body").on("click",".liTag div label",function(event){
- 			
  			$(this).parent().hide();
  			var input = $(this).parent().parent().find('.edit');
  			$(input).show();
  			$(input).focus();
- 			
  		});
  		
  		// Handle when enter after input todos data
@@ -152,6 +152,7 @@ $(document).ready(function(){
  				var id = id_todo.substr(id_todo.indexOf('_')+1);	
  				var value = $(this).val();	
  				var jsonData = {'id': id ,'name' : value};
+ 				
  				$.ajax({
  					url: "@controllers.routes.Application.editTask()",
  					type: "PUT",
@@ -172,12 +173,13 @@ $(document).ready(function(){
  				
  			}
  		});
+ 		
  	// Handle when click outside edit input text 
  		$("body").on("blur","li .edit",function(){
  			$(this).hide();
  			$(this).parent().find('.view').show();
- 			
  		});
+ 		
  		$("body").on("click","#clear-completed",function(){
  	 		
  		  var todo_count = $(".todo-count");
@@ -196,7 +198,7 @@ $(document).ready(function(){
  				
  			});
  			
- 		 	if(arrayData.check.length >=1){
+ 		 	if(arrayData.check.length >=1) {
 	 			$.ajax({
 	 				url: "@controllers.routes.Application.deleteAll()",
 	 				type: "DELETE",
@@ -216,8 +218,7 @@ $(document).ready(function(){
 	 					alert('Opps');
 	 				}
 	 			});
- 			}
- 			else {
+ 			} else {
  				alert("you must choose at least one checkbox");
  			} 
  		});

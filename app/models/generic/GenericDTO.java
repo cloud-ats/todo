@@ -1,18 +1,21 @@
 package models.generic;
+
 import java.lang.reflect.Field;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 
+/**
+ * 
+ * @author TuanHQ
+ *
+ */
 public abstract class GenericDTO extends BasicDBObject {
-	/**
+	
+  /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public GenericDTO() {
-
-	}
 
 	public void from(DBObject doc) throws IllegalArgumentException, IllegalAccessException  {
 		Field fields[] = this.getClass().getFields();
@@ -24,7 +27,6 @@ public abstract class GenericDTO extends BasicDBObject {
 				this.put(fields[j].getName(), doc.get(fields[j].getName()));
 			}
 		}
-
 	}
 
 }
